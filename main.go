@@ -23,8 +23,11 @@ func main() {
 	//lambda.Start(HandleRequest)
 	u4 := GenerateUUID("v4")
 	log.Println(formatUUID(u4))
-	u1 := GenerateUUID("v1")
-	log.Println(formatUUID(u1))
 	up := GenerateUUID("pseudo")
 	log.Println(formatUUID(up))
+	log.Println("10 v1 UUIDs")
+	for i := 0; i < 10; i++ {
+		u1 := GenerateUUID("v1")
+		log.Println(formatUUID(u1))
+	}
 }

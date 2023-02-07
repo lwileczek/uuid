@@ -53,6 +53,8 @@ func uuidV1() (uuid, error) {
 		tm := getTime()
 		if tm <= v1State.Timestamp {
 			v1State.ClockSeq++
+		} else {
+			v1State.Timestamp = tm
 		}
 	} else {
 		// construct the state

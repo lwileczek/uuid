@@ -42,7 +42,7 @@ func GenerateUUID(version string) [16]byte {
 		}
 		return generatedUUID
 	case "v1":
-		log.Println("v1 requested.")
+		//log.Println("v1 requested.")
 		generatedUUID, err := uuidV1()
 		if err != nil {
 			log.Fatal(err)
