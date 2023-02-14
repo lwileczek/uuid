@@ -1,11 +1,9 @@
-package main
+package uuid
 
 import (
 	"regexp"
 	"testing"
 )
-
-//TOOD: Unit test GenerateUUID
 
 //TestPseudoUUID Unit test for our Pseudo UUIDs
 func TestPseudoUUID(t *testing.T) {
@@ -28,13 +26,63 @@ func TestFormattingUUID(t *testing.T) {
 	if err != nil {
 		t.Error("Error Generating Pseudo UUID", err)
 	}
-	str := formatUUID(u)
+	str := FormatUUID(u)
 	re, err := regexp.Compile("[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}")
 	if err != nil {
 		t.Error("Error Generating Regular Expression", err)
 	}
 	if !re.MatchString(str) {
 		t.Errorf("String produced did not match regular expression pattern:\nString:%s\n", str)
+	}
+}
+
+func TestGenerateUUID(t *testing.T) {
+	u, err := GenerateUUID("v1")
+	if err != nil {
+		t.Error("Error generating UUID", err)
+	}
+
+	if u[6]>>4 != 1 {
+		t.Error("Version bit not properly set")
+		t.Log(u[6] >> 4)
+	}
+
+	if !validVariant(u) {
+		t.Error("The variant bit not properly set")
+		t.Log(u[8] >> 4)
+	}
+
+	u, err = GenerateUUID("v4")
+	if err != nil {
+		t.Error("Error generating UUID", err)
+	}
+
+	if u[6]>>4 != 4 {
+		t.Error("Version bit not properly set")
+		t.Log(u[6] >> 4)
+	}
+
+	if !validVariant(u) {
+		t.Error("The variant bit not properly set")
+		t.Log(u[8] >> 4)
+	}
+	u, err = GenerateUUID("pseudo")
+	if err != nil {
+		t.Error("Error Generating Pseudo UUID", err)
+	}
+	if u == Nil {
+		t.Error("Error, pseudo generator returned null UUID")
+	}
+	u, err = GenerateUUID("null")
+	if err != nil {
+		t.Error("Error Generating Pseudo UUID", err)
+	}
+	if u != Nil {
+		t.Error("NULL UUID generator did not create null UUID:", u)
+	}
+	u, err = GenerateUUID("GiveMeError")
+	if err == nil {
+		t.Error("Generate UUID is not tossing error on random input")
 	}
 }
 

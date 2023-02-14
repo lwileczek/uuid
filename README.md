@@ -1,3 +1,4 @@
+![build status](https://github.com/lwileczek/uuid/actions/workflows/basic.yml/badge.svg)
 # UUID
 Yet another implimentation of UUIDs in Go.
 A UUID is encoded as a 128-bit object. The full offical Description from 2005: [RFC 4122]
