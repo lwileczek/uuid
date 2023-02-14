@@ -19,26 +19,8 @@ Use crypto/rand to create 128 pseudo-random bits and then format them as a UUID 
 The empty or Nil UUID is all zeros: `00000000-0000-0000-0000-000000000000`
 
 ## Build
-Like any go project, ensure you have Go downloaded (1.19+) and run `go build .`
-
-# Fun Stuff
-## Benchmarks
-Benchmarks don't really mean anything here but it's interesting to note that since UUIDv1 is incrementing
-the time or clock sequence which is kept in a struct, so we don't need to make a new allocation with multiple
-requests. So it's crazy fast even though it's the least random we could really make.
-
-```
-go test -benchmem -bench=. 
-goos: darwin
-goarch: amd64
-pkg: github.com/lwileczek/uuid
-cpu: Intel(R) Core(TM) i7-8569U CPU @ 2.80GHz
-BenchmarkPseudoUUID-8            1116513              1034 ns/op              16 B/op          1 allocs/op
-BenchmarkV1-8                   16075844                72.30 ns/op            0 B/op          0 allocs/op
-BenchmarkV4-8                    1000000              1025 ns/op              16 B/op          1 allocs/op
-PASS
-ok      github.com/lwileczek/uuid    4.384s
-```
+Like any go project, ensure you have Go downloaded (1.19+) and run `go build ./...`
+To build the CLI only `CGO_ENABLED=0 go build ./cmd/cli -o uuid`.
 
 ## Related Projects and Links
   - Google's Go UUID package: https://github.com/google/uuid
