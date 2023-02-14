@@ -47,7 +47,6 @@ var v1State = uuidState{Ready: false}
 
 //V1 – Generate UUID v1
 func V1(useMAC bool) (uuid, error) {
-	var uuid [16]byte
 	//Another option is to use sync.Once
 	if v1State.Ready {
 		//increment and continue
@@ -77,19 +76,19 @@ func V1(useMAC bool) (uuid, error) {
 	ut.ClockSeqHi |= 0x80
 
 	//Now assign all the bits to our UUID [16]byte
-	binary.BigEndian.PutUint32(uuid[0:4], ut.TimeLow)
-	binary.BigEndian.PutUint16(uuid[4:6], ut.TimeMid)
-	binary.BigEndian.PutUint16(uuid[6:8], ut.TimeHiAndVersion)
-	uuid[8] = ut.ClockSeqHi
-	uuid[9] = ut.ClockSeqLow
+	binary.BigEndian.PutUint32(blankUUID[0:4], ut.TimeLow)
+	binary.BigEndian.PutUint16(blankUUID[4:6], ut.TimeMid)
+	binary.BigEndian.PutUint16(blankUUID[6:8], ut.TimeHiAndVersion)
+	blankUUID[8] = ut.ClockSeqHi
+	blankUUID[9] = ut.ClockSeqLow
 	for i, b := range v1State.Node {
-		uuid[10+i] = b
+		blankUUID[10+i] = b
 	}
 
-	uuid[6] = (uuid[6] & 0x0f) | 0x10 // Version 1
-	uuid[8] = (uuid[8] & 0x3f) | 0x80 // Variant is 10 - RFC4122
+	blankUUID[6] = (blankUUID[6] & 0x0f) | 0x10 // Version 1
+	blankUUID[8] = (blankUUID[8] & 0x3f) | 0x80 // Variant is 10 - RFC4122
 
-	return uuid, nil
+	return blankUUID, nil
 }
 
 type uuidState struct {

@@ -28,6 +28,23 @@ func TestV4(t *testing.T) {
 	t.Error("The UUID is the nil UUID")
 }
 
+func TestDuplicateV4(t *testing.T) {
+	u0, err := uuidV4()
+	if err != nil {
+		t.Error("Error generating UUIDv4", err)
+	}
+	u1, err := uuidV4()
+	if err != nil {
+		t.Error("Error generating UUIDv4 (redux)", err)
+	}
+	for i, b := range u0 {
+		if u1[i] != b {
+			return
+		}
+	}
+	t.Error("v4 generates the same UUID each time")
+}
+
 func validVariant(uid uuid) bool {
 	switch {
 	case (uid[8] & 0xc0) == 0x80:

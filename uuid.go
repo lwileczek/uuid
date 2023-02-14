@@ -10,18 +10,18 @@ type uuid [16]byte
 
 var (
 	//Nil empty UUID, all Zeros
-	Nil uuid
+	Nil       uuid
+	blankUUID uuid
 )
 
 // Note - NOT RFC4122 compliant
 func pseudoUUID() (uuid, error) {
-	var b [16]byte
-	_, err := rand.Read(b[:])
+	_, err := rand.Read(blankUUID[:])
 	if err != nil {
 		fmt.Println("Error: ", err)
 		return Nil, err
 	}
-	return b, nil
+	return blankUUID, nil
 }
 
 //FormatUUID Convert UUID bytes to a hex string with hyphens
