@@ -15,11 +15,13 @@ const (
 var (
 	uuidTypeFlag string
 	createCount  int
+	tryMAC       bool
 )
 
 func main() {
 	flag.StringVar(&uuidTypeFlag, "t", "v1", "The type or version of UUID to generate: v1,v4,Pseudo,null")
 	flag.IntVar(&createCount, "n", 1, "How many UUIDs to create")
+	flag.BoolVar(&tryMAC, "m", false, "When creating v1 UUIDs, use local MAC addr")
 	flag.Parse()
 
 	//Default is to create v1 UUIDs unless other specified
@@ -49,7 +51,7 @@ func main() {
 	}
 
 	for z := 0; z < createCount; z++ {
-		u, err := uuid.GenerateUUID(uuidType)
+		u, err := uuid.GenerateUUID(uuidType, tryMAC)
 		if err != nil {
 			fmt.Printf("There was an error generating the UUID: %s\n", err)
 			return

@@ -23,19 +23,19 @@ func HandleRequest(ctx context.Context, event interface{}) (string, error) {
 
 func main() {
 	//lambda.Start(HandleRequest)
-	u4, err := uuid.GenerateUUID("v4")
+	u4, err := uuid.GenerateUUID("v4", false)
 	if err != nil {
 		log.Printf("Error generating v4 UUID: %s\n", err.Error())
 	}
 	log.Println(uuid.FormatUUID(u4))
-	up, err := uuid.GenerateUUID("pseudo")
+	up, err := uuid.GenerateUUID("pseudo", false)
 	if err != nil {
 		log.Printf("Error generating pseudo UUID: %s\n", err.Error())
 	}
 	log.Println(uuid.FormatUUID(up))
 	log.Println("10 v1 UUIDs")
 	for i := 0; i < 10; i++ {
-		u1, err := uuid.GenerateUUID("v1")
+		u1, err := uuid.GenerateUUID("v1", false)
 		if err != nil {
 			log.Printf("Error generating v1 UUID: %s\n", err.Error())
 		}

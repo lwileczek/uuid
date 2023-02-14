@@ -37,7 +37,7 @@ func TestFormattingUUID(t *testing.T) {
 }
 
 func TestGenerateUUID(t *testing.T) {
-	u, err := GenerateUUID("v1")
+	u, err := GenerateUUID("v1", false)
 	if err != nil {
 		t.Error("Error generating UUID", err)
 	}
@@ -52,7 +52,7 @@ func TestGenerateUUID(t *testing.T) {
 		t.Log(u[8] >> 4)
 	}
 
-	u, err = GenerateUUID("v4")
+	u, err = GenerateUUID("v4", false)
 	if err != nil {
 		t.Error("Error generating UUID", err)
 	}
@@ -66,21 +66,21 @@ func TestGenerateUUID(t *testing.T) {
 		t.Error("The variant bit not properly set")
 		t.Log(u[8] >> 4)
 	}
-	u, err = GenerateUUID("pseudo")
+	u, err = GenerateUUID("pseudo", false)
 	if err != nil {
 		t.Error("Error Generating Pseudo UUID", err)
 	}
 	if u == Nil {
 		t.Error("Error, pseudo generator returned null UUID")
 	}
-	u, err = GenerateUUID("null")
+	u, err = GenerateUUID("null", false)
 	if err != nil {
 		t.Error("Error Generating Pseudo UUID", err)
 	}
 	if u != Nil {
 		t.Error("NULL UUID generator did not create null UUID:", u)
 	}
-	u, err = GenerateUUID("GiveMeError")
+	u, err = GenerateUUID("GiveMeError", false)
 	if err == nil {
 		t.Error("Generate UUID is not tossing error on random input")
 	}

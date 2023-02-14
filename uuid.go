@@ -6,13 +6,6 @@ import (
 	"log"
 )
 
-// CheckError Panic if an error is ever found
-func CheckError(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 type uuid [16]byte
 
 var (
@@ -23,8 +16,6 @@ var (
 // Note - NOT RFC4122 compliant
 func pseudoUUID() (uuid, error) {
 	var b [16]byte
-	//var prng = rand.Reader
-	//_, err := io.ReadFull(prng, b[:])
 	_, err := rand.Read(b[:])
 	if err != nil {
 		fmt.Println("Error: ", err)
@@ -39,7 +30,11 @@ func FormatUUID(u uuid) string {
 }
 
 //GenerateUUID - Generate a UUID
-func GenerateUUID(version string) ([16]byte, error) {
+// Params:
+//	version: The version of UUID to create, e.g., v1,v4,v5, etc.
+//  tryMAC: If using v1, try checking for a MAC addr or create random
+//	Some people may not want to use their MAC address for security reasons
+func GenerateUUID(version string, tryMAC bool) ([16]byte, error) {
 	switch version {
 	case "v4":
 		generatedUUID, err := uuidV4()
@@ -48,7 +43,7 @@ func GenerateUUID(version string) ([16]byte, error) {
 		}
 		return generatedUUID, nil
 	case "v1":
-		generatedUUID, err := uuidV1()
+		generatedUUID, err := V1(tryMAC)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -45,8 +45,8 @@ const (
 //v1State State struct to manage timestamp state when generating new UUIDs
 var v1State = uuidState{Ready: false}
 
-//Generate UUID v1
-func uuidV1() (uuid, error) {
+//V1 – Generate UUID v1
+func V1(useMAC bool) (uuid, error) {
 	var uuid [16]byte
 	//Another option is to use sync.Once
 	if v1State.Ready {
@@ -59,7 +59,7 @@ func uuidV1() (uuid, error) {
 		}
 	} else {
 		// construct the state
-		v1State.setNode()
+		v1State.setNode(useMAC)
 		err := v1State.setClockSeq()
 		if err != nil {
 			log.Printf("Error setting the clock sequence\n%s", err.Error())
@@ -114,24 +114,27 @@ func getTime() uint64 {
 // "A better solution is to obtain a 47-bit cryptographic quality random
 // number and use it as the low 47 bits of the node ID, with the least
 // significant bit of the first octet of the node ID set to one." - RFC 4122
-func (u *uuidState) setNode() {
-	if mac, err := defaultHWAddr(); err == nil {
-		for b := 0; b < 6; b++ {
-			u.Node[b] = mac[b]
+func (u *uuidState) setNode(tryMAC bool) {
+	if tryMAC {
+		if mac, err := defaultHWAddr(); err == nil {
+			for b := 0; b < 6; b++ {
+				u.Node[b] = mac[b]
+			}
+			return
 		}
-		return
 	}
 
+	u.Node = rndNode()
+}
+
+func rndNode() [6]byte {
 	var b [6]byte
-	n, err := rand.Read(b[:])
+	_, err := rand.Read(b[:])
 	if err != nil {
 		log.Fatal(err)
 	}
-	if n == 0 {
-		log.Fatal("No bytes read setting the node")
-	}
 	b[0] |= 0x01
-	u.Node = b
+	return b
 }
 
 func (u *uuidState) setClockSeq() error {
