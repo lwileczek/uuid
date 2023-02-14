@@ -1,4 +1,4 @@
-package main
+package uuid
 
 import (
 	"crypto/rand"
@@ -42,6 +42,7 @@ const (
 	g1582ns100 = g1582 * 10000000 // 100s of a nanoseconds between epochs
 )
 
+//v1State State struct to manage timestamp state when generating new UUIDs
 var v1State = uuidState{Ready: false}
 
 //Generate UUID v1
@@ -122,9 +123,12 @@ func (u *uuidState) setNode() {
 	}
 
 	var b [6]byte
-	_, err := rand.Read(b[:])
+	n, err := rand.Read(b[:])
 	if err != nil {
 		log.Fatal(err)
+	}
+	if n == 0 {
+		log.Fatal("No bytes read setting the node")
 	}
 	b[0] |= 0x01
 	u.Node = b

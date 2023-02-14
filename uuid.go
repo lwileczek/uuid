@@ -1,10 +1,17 @@
-package main
+package uuid
 
 import (
 	"crypto/rand"
 	"fmt"
 	"log"
 )
+
+// CheckError Panic if an error is ever found
+func CheckError(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
 type uuid [16]byte
 
@@ -26,37 +33,35 @@ func pseudoUUID() (uuid, error) {
 	return b, nil
 }
 
-//Convert UUID bytes to a hex string with hyphens
-func formatUUID(u uuid) string {
+//FormatUUID Convert UUID bytes to a hex string with hyphens
+func FormatUUID(u uuid) string {
 	return fmt.Sprintf("%X-%X-%X-%X-%X", u[0:4], u[4:6], u[6:8], u[8:10], u[10:])
 }
 
 //GenerateUUID - Generate a UUID
-func GenerateUUID(version string) [16]byte {
+func GenerateUUID(version string) ([16]byte, error) {
 	switch version {
 	case "v4":
-		log.Println("v4 requested.")
 		generatedUUID, err := uuidV4()
 		if err != nil {
 			log.Fatal(err)
 		}
-		return generatedUUID
+		return generatedUUID, nil
 	case "v1":
-		//log.Println("v1 requested.")
 		generatedUUID, err := uuidV1()
 		if err != nil {
 			log.Fatal(err)
 		}
-		return generatedUUID
+		return generatedUUID, nil
 	case "pseudo":
-		log.Println("Pseudo-UUIDrequested.")
 		generatedUUID, err := pseudoUUID()
 		if err != nil {
 			log.Fatal(err)
 		}
-		return generatedUUID
+		return generatedUUID, nil
+	case "null":
+		return Nil, nil
 	default:
-		log.Fatal("Did not understand the version request:", version)
+		return Nil, fmt.Errorf("Did not understand the version request: %s", version)
 	}
-	return Nil
 }
