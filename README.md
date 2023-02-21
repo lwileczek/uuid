@@ -22,6 +22,26 @@ The empty or Nil UUID is all zeros: `00000000-0000-0000-0000-000000000000`
 Like any go project, ensure you have Go downloaded (1.19+) and run `go build ./...`
 To build the CLI only `CGO_ENABLED=0 go build ./cmd/cli -o uuid`.
 
+# Lambda
+The lambda function is available under the following url: ...
+
+It takes a POST request with the following options
+
+```go
+type expectedPayload struct {
+    Count   int    `json:"count"`  // How many UUIDs to create [1, 5000]
+    Version string `json:"version"` // The type of UUID to use, v1, v4, Pseudo
+    Word    string `json:"word,omitempty"` // If v5, the word to use in generating a UUID
+}
+```
+
+Example
+```bash
+curl -X POST https://someURL.com/v0/uuid \
+    -H 'Content-Type: application/json' \
+    -d '{"count": 2, "version": "v4"}'
+```
+
 ## Related Projects and Links
   - Google's Go UUID package: https://github.com/google/uuid
   - Another Popular Go UUID package v1-5: https://github.com/satori/go.uuid
