@@ -64,7 +64,10 @@ func HandleRequest(ctx context.Context, payload events.APIGatewayProxyRequest) (
 		for i := 0; i < request.Count; i++ {
 			u, err := uuid.GenerateUUID(UUIDversion, true)
 			if err != nil {
-				log.Printf("Error generating v1 UUID: %s\n", err.Error())
+				log.Printf("Error generating UUID: %s\n", err.Error())
+				badRequestError := fmt.Errorf("Error Generating UUID")
+				response := formatErrorResponse(badRequestError, 500)
+				return response, err
 			}
 			uuids[i] = uuid.FormatUUID(u)
 		}
@@ -81,11 +84,11 @@ func HandleRequest(ctx context.Context, payload events.APIGatewayProxyRequest) (
 
 	response := events.APIGatewayProxyResponse{
 		StatusCode:      200,
-		IsBase64Encoded: true,
+		IsBase64Encoded: false,
 		Headers: map[string]string{
 			"Content-Type": "application/json",
 		},
-		Body: string(stringData[:]),
+		Body: string(stringData),
 	}
 	return response, nil
 }
